@@ -64,7 +64,7 @@ func (s *Service) Start(svc service.Service) error {
 	go func() {
 		r := mux.NewRouter()
 		r.HandleFunc("/services/{service}", s.handler(cfg))
-		http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.Server, cfg.Port), nil)
+		http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.Server, cfg.Port), r)
 	}()
 
 	return nil
