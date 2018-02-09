@@ -1,0 +1,20 @@
+variables:
+  APP_NAME: "spac"
+  PROJECT_PATH: "sbp.gitlab.schubergphilis.com/toolkit"
+  DOCKER_REGISTRY: registry.services.schubergphilis.com:5000
+
+stages:
+  - test
+
+before_script:
+  - mkdir -p $GOPATH/src/$PROJECT_PATH
+  - cd $GOPATH/src/$PROJECT_PATH
+  - ln -s $CI_PROJECT_DIR $APP_NAME
+  - cd $APP_NAME
+
+check-test:
+  stage: test
+  image: registry.services.schubergphilis.com:5000/saas/microservice-builder-1.10
+  script:
+    - make test
+

@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package dsipb;
+
+// Interface exported by the server.
+service DSI {
+  // ActionResult receives the action result of the last action
+  rpc ActionResult(ActionResultRequest) returns (ActionResultResponse) {}
+
+  // ClientData takes a single error that will be logged in the database
+  rpc ClientData(Client) returns (ClientResponse) {}
+
+  // ClientOutput receives and saves the provisioning progress in the database
+  rpc ClientOutput(stream Output) returns (OutputResponse) {}
+
+  // ExceptionAction requests an exception action to handle a provisioning exception
+  rpc ExceptionAction(Client) returns (stream ExceptionActionResponse) {}
+
+  // NextAction returns the next provisioning action that must be executed
+  rpc NextAction(Client) returns (NextActionResponse) {}
+
+  // Provision a client
+  rpc Provision(ProvisionRequest) returns (ProvisionResponse) {}
+
+  // Time returns the current time in Unix timestamp seconds
+  rpc Time(Client) returns (TimeResponse) {}
+}
+
+enum ExceptionAction {
+  Fail = 0;
+  Ignore = 1;
+  Debug = 2;
+}
+
+enum ProvisionAction {
+  Wait = 0;
+  Install = 1;
+  Configure = 2;
+  Prepare = 3;
+  Execute = 4;
+  None = 5;
+  Cancel = 6;
+}
+
+// ActionResultRequest represents an action result request
+message ActionResultRequest {
+  string uuid = 1;
+  ProvisionAction action = 2;
+  bool success = 3;
+  string error = 4;
+}
+
+// ActionResultResponse represents an output response
+message ActionResultResponse {}
+
+// Client represents a client request
+message Client {
+  string uuid = 1;
+}
+
+// ClientResponse represents a client response
+message ClientResponse {
+  string type = 1;
+  bytes config = 2;
+  bytes data = 3;
+  bool provision = 4;
+}
+
+// ExceptionActionResponse represents an exception action response
+message ExceptionActionResponse {
+  ExceptionAction action = 1;
+}
+
+// NextActionResponse represents a next action response
+message NextActionResponse {
+  ProvisionAction action = 1;
+}
+
+// OutputRequest represents an output request
+message Output {
+  string uuid = 1;
+  string output = 2;
+}
+
+// OutputResponse represents an output response
+message OutputResponse {}
+
+// ProvisionRequest represents a provision request
+message ProvisionRequest {
+  string uuid = 1;
+  bytes data = 2;
+  string instance = 3;
+}
+
+// ProvisionResponse represents a provision response
+message ProvisionResponse {}
+
+// TimeResponse represents a time response
+message TimeResponse {
+  int64 timestamp = 1;
+}
+
