@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
-	"os"
 	"time"
+
 	"github.com/kardianos/service"
 )
 
@@ -21,10 +19,10 @@ func init() {
 }
 
 func main() {
-	svcFlag := flag.String("service", "", "Control the system service.")
+	config := flag.String("config", "", "Full path of configuration file.")
+	debug := flag.Bool("debug", false, "Debug mode.")
+	flags := flag.String("service", "", "Control the system service.")
 	version := flag.Bool("version", false, "Show version.")
-	debug   := flag.Bool("debug", false, "Debug mode.")
-	config  := flag.String("config", "", "Full path of configuration file.")
 	flag.Parse()
 
 	if *version {
@@ -38,15 +36,9 @@ func main() {
 		Description: "Enables https calls to checks applications by active / open ports",
 	}
 
-	c := &Client{}
-        
-        if *config != "" {
-		strConfig := *config
-		c.Config = strConfig
-        }
-
-	if *debug {
-		c.Debug = true
+	c := &Service{
+		Config: *config,
+		Debug:  *debug,
 	}
 
 	s, err := service.New(c, svcConfig)
@@ -54,8 +46,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if len(*svcFlag) != 0 {
-		err := service.Control(s, *svcFlag)
+	if *flags != "" {
+		err = service.Control(s, *flags)
 		if err != nil {
 			log.Printf("Valid actions: %q\n", service.ControlAction)
 			log.Fatal(err)
@@ -68,33 +60,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = s.Run()
-	if err != nil {
+	if err = s.Run(); err != nil {
 		logger.Error(err)
 	}
-}
-
-// readConfig reads and parses the config file
-func readConfig(config string) (*Config, error) {
-	for i := 0; i < 60; i++ {
-		if _, err := os.Stat(config); os.IsNotExist(err) {
-			time.Sleep(5 * time.Second)
-			continue
-		}
-
-		raw, err := ioutil.ReadFile(config)
-		if err != nil {
-			return nil, fmt.Errorf("Failed to read config file %q: %v", config, err)
-		}
-
-		cfg := &Config{}
-		err = json.Unmarshal(raw, cfg)
-		if err != nil {
-			return nil, fmt.Errorf("Error parsing config file %q: %v", config, err)
-		}
-
-		return cfg, nil
-	}
-
-	return nil, nil
 }

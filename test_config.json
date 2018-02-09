@@ -1,13 +1,8 @@
 {
   "server": "0.0.0.0",
-  "port": "9000",
-  "apps": [ 
-    {
-      "name": "mysql",
-      "port": "3306"
-    },{
-      "name": "ssh",
-      "port": "22"
-    } 
-  ]
+  "port": 9000,
+  "apps": {
+    "mysql": ":3306",
+    "ssh": ":22"
+  }
 }
