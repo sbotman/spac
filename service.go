@@ -96,7 +96,7 @@ func (s *Service) handler(cfg *Config) func(http.ResponseWriter, *http.Request) 
 
 		bind, ok := cfg.Apps[vars["service"]]
 		if !ok {
-			http.Error(w, "", 404)
+			http.Error(w, "", 400)
 			return
 		}
 
