@@ -8,7 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -16,6 +18,13 @@ import (
 func isUpstart() bool {
 	if _, err := os.Stat("/sbin/upstart-udev-bridge"); err == nil {
 		return true
+	}
+	if _, err := os.Stat("/sbin/init"); err == nil {
+		if out, err := exec.Command("/sbin/init", "--version").Output(); err == nil {
+			if strings.Contains(string(out), "init (upstart") {
+				return true
+			}
+		}
 	}
 	return false
 }
@@ -147,7 +156,7 @@ func (s *upstart) Restart() error {
 // the program before the Stop handler can run.
 const upstartScript = `# {{.Description}}
 
- {{if .DisplayName}}description    "{{.DisplayName}}"{{end}}
+{{if .DisplayName}}description    "{{.DisplayName}}"{{end}}
 
 kill signal INT
 {{if .ChRoot}}chroot {{.ChRoot}}{{end}}

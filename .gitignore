@@ -23,5 +23,5 @@ _testmain.go
 *.test
 *.prof
 
-# Make sure we do not commit the binary
-spac
+# Make sure we do not commit binaries
+bin/

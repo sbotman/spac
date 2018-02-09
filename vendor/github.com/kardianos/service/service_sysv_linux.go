@@ -171,10 +171,12 @@ const sysvScript = `#!/bin/sh
 
 cmd="{{.Path}}{{range .Arguments}} {{.|cmd}}{{end}}"
 
-name=$(basename $0)
+name=$(basename $(readlink -f $0))
 pid_file="/var/run/$name.pid"
 stdout_log="/var/log/$name.log"
 stderr_log="/var/log/$name.err"
+
+[ -e /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
 get_pid() {
     cat "$pid_file"
@@ -203,7 +205,7 @@ case "$1" in
         if is_running; then
             echo -n "Stopping $name.."
             kill $(get_pid)
-            for i in {1..10}
+            for i in $(seq 1 10)
             do
                 if ! is_running; then
                     break
