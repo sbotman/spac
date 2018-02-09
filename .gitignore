@@ -24,4 +24,4 @@ _testmain.go
 *.prof
 
 # Make sure we do not commit the binary
-dsi-client
+spac
