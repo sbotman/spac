@@ -37,3 +37,20 @@ We configure the route 53 health-checks to check spac on port 9000
                     +-------------------------------------------------+
 ```
 
+In this setup, the spac configuration would look like:
+```
+{
+  "server": "0.0.0.0",
+  "port": 9000,
+  "apps": {
+    "ftp": ":21"
+  }
+}
+```
+The health checkers can query the status on:  
+`http://my.example.com:9000/services/ftp`
+
+
+
+
+
