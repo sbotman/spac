@@ -37,6 +37,8 @@ We configure the route 53 health-checks to check spac on port 9000
                     +-------------------------------------------------+
 ```
 
+### Config
+
 In this setup, the spac configuration would look like:
 ```
 {
