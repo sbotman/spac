@@ -1,5 +1,5 @@
 # Simple Port Application Checker
-Checking if ports are in use by other applications
+Small HTTP Proxy to remotely check if ports are in use by other applications.
 
 ### About
 The usage is simple: offloading the port checking of your application to another process,  
@@ -13,7 +13,7 @@ because you can run spac on any port you like.
 Let's take a simple ftp service as an example.  
 We configure ftp access (port 21) based on security group and ip restrictions.  
 We configure spac to check the port 21 internally and open port 9000 for the world.  
-We configure the route 53 health-checks to check spac on port 9000 
+We configure the route 53 health-checks to check ftp via spac on port 9000 
 
 ```
                     +-----------------+        +----------------------+
@@ -49,10 +49,5 @@ In this setup, the spac configuration would look like:
   }
 }
 ```
-The health checkers can query the status on:  
+The Route53 health-check machines can query the status on:  
 `http://my.example.com:9000/services/ftp`
-
-
-
-
-
